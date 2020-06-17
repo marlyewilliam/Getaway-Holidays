@@ -4,6 +4,8 @@ from django.contrib import admin
 from .models import *
 from .models.Activity import *
 from .models.Employee import *
+from .models.Client import *
+from .models.Reservation import *
 
 
 admin.site.register(Equipments)
@@ -17,3 +19,7 @@ admin.site.register(Employees)
 admin.site.register(OutdoorInstructors)
 admin.site.register(Masseuse)
 admin.site.register(SwimmingInstructors)
+admin.site.register(ClientsProfile)
+admin.site.register(HealthConditions)
+admin.site.register(Reservations)
+admin.site.register(ExchangeRate)

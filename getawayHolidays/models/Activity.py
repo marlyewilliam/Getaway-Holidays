@@ -1,5 +1,6 @@
 from django.db import models
 from djmoney.models.fields import MoneyField
+from .Client import HealthConditions
 
 
 
@@ -16,6 +17,7 @@ class Activities(models.Model):
     duration = models.DurationField()
     price_per_duration =  MoneyField(max_digits=14, decimal_places=2, default_currency='USD')
     location = models.CharField(max_length = 255, null = False)
+    restrict_conditions = models.ManyToManyField(HealthConditions, null = True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True, null=True, blank=True)
 
