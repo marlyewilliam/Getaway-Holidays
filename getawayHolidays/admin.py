@@ -2,10 +2,7 @@ from django.contrib import admin
 
 # Register your models here.from .Equipment import *
 from .models import *
-from .models.Activity import *
-from .models.Employee import *
-from .models.Client import *
-from .models.Reservation import *
+
 
 
 admin.site.register(Equipments)

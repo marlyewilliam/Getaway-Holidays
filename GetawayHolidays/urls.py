@@ -15,7 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import include
+from rest_framework.authtoken.views import obtain_auth_token
+from getawayHolidays import views
+from django.conf.urls import url
+from rest_framework import routers
+
+
+router = routers.DefaultRouter()
+router.register(r'users', views.UserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls')),
+    path(r'', include(router.urls)),
+    # path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    url(r'^api-token-auth/', obtain_auth_token)
+
 ]

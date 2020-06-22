@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'getawayHolidays',
     'rest_framework',
     'djmoney',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
