@@ -8,16 +8,16 @@ class Activities(models.Model):
     Name = models.CharField(max_length = 255, null = False)
     description = models.TextField(null = True)
     activity_type = models.CharField(max_length=24, null = False, choices=(
-        (0, 'Indoor'),
-        (1, 'Outdoor')))
+        ('Indoor', 'Indoor'),
+        ('Outdoor', 'Outdoor')))
     risk_level = models.CharField(max_length=24, null = False, choices=(
-        (0, 'Low'),
-        (1, 'Medium'),
-        (1, 'High')))
+        ('Low', 'Low'),
+        ('Medium', 'Medium'),
+        ('High', 'High')))
     duration = models.DurationField()
     price_per_duration =  MoneyField(max_digits=14, decimal_places=2, default_currency='USD')
-    location = models.CharField(max_length = 255, null = False)
-    restrict_conditions = models.ManyToManyField(HealthConditions, null = True)
+    location = models.CharField(max_length = 255, null = True, blank = True)
+    restrict_conditions = models.ManyToManyField(HealthConditions, null = True, blank = True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True, null=True, blank=True)
 

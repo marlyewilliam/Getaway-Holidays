@@ -2,12 +2,6 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import *
 
-# class UserSerializer(serializers.ModelSerializer):
-#     snippets = serializers.PrimaryKeyRelatedField(queryset = ClientsProfile.objects.all())
-
-#     class Meta:
-#         model = User
-#         fields = ['id', 'username', 'first_name', 'last_name', 'email','snippets']
 
 
 class ClientsProfileSerializer(serializers.ModelSerializer):
@@ -39,3 +33,20 @@ class ClientSerializer(serializers.ModelSerializer):
             client_profile.health_conditions.set(health_conditions)
         client_profile.save()
         return user
+
+
+
+class UserReservationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Reservations
+        exclude = ('user', )
+
+
+
+
+class ReservationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Reservations
+        fields = '__all__'
