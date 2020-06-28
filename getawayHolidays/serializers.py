@@ -35,6 +35,16 @@ class ClientSerializer(serializers.ModelSerializer):
         return user
 
 
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activities
+        fields = '__all__'
+
+class AccomodationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Accommodations
+        fields = '__all__'
+
 
 class UserReservationSerializer(serializers.ModelSerializer):
 
@@ -43,6 +53,13 @@ class UserReservationSerializer(serializers.ModelSerializer):
         exclude = ('user', )
 
 
+class GetReservationSerializer(serializers.ModelSerializer):
+    activities = ActivitySerializer(many = True)
+    accommodations = AccomodationSerializer()
+
+    class Meta:
+        model = Reservations
+        fields = '__all__'
 
 
 class ReservationSerializer(serializers.ModelSerializer):

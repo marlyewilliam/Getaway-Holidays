@@ -57,6 +57,13 @@ class UserReservation(APIView, UpdateModelMixin):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+    def get(self, request):
+        user_id = get_user(request)
+        reservations = models.Reservations.objects.filter(user__id = user_id)
+        serializer = serializers.GetReservationSerializer(reservations, many=True)
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+        
+
 class Reservation(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (per.IsAuthenticated,)

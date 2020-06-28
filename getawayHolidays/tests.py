@@ -341,3 +341,14 @@ class deleteReservationTests(APITestCase):
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data , {'data' : 'You are not allowed to delete that reservation'})
+
+
+class GetReservationTests(APITestCase):
+
+    def test_get_reservation(self):
+        user = get_user()
+        token = Token.objects.get(user = user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        url = '/user-reservation/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
