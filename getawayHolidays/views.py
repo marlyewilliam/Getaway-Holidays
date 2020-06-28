@@ -114,3 +114,10 @@ class StaffReservation(viewsets.ModelViewSet):
     permission_classes = (per.IsAuthenticated,)
     queryset = models.Reservations.objects.all()
     serializer_class = serializers.ReservationSerializer
+
+class Logout(APIView):
+    def get(self, request, format=None):
+        token_value = request.META.get('HTTP_AUTHORIZATION').split()[1]
+        token = Token.objects.get(key = token_value)
+        token.delete()
+        return Response(status=status.HTTP_200_OK)

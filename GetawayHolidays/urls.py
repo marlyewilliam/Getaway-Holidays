@@ -30,8 +30,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path(r'', include(router.urls)),
-    # path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     url(r'^api-token-auth/', obtain_auth_token),
+    url(r'^logout/', views.Logout.as_view()),
     url(r'^user-reservation/', views.UserReservation.as_view()),
     url('reservation/(?P<pk>[0-9]+)/', views.Reservation.as_view()),
 
