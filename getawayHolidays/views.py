@@ -23,6 +23,34 @@ def get_user(request):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.ClientSerializer
+    http_method_names = ['get','post']
+
+
+class ClientProfileAPI(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (per.IsAuthenticated,)
+
+    def put(self, request, pk):
+        clients_profile = models.ClientsProfile.objects.get(id=pk)
+        user = get_user(request)
+        user = User.objects.get(id=user)
+        if clients_profile.user != user:
+            return Response({'data' : 'You are not allowed to update that user profile'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = serializers.ClientsProfileSerializer(clients_profile, data =request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data' : serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        clients_profile = models.ClientsProfile.objects.get(id=pk)
+        user = get_user(request)
+        user = User.objects.get(id=user)
+        if clients_profile.user != user:
+            return Response({'data' : 'You are not allowed to delete that user profile'}, status=status.HTTP_400_BAD_REQUEST)
+        user.delete()
+        return Response({'data' : 'user deleted'}, status=status.HTTP_200_OK)
 
 
 class UserReservation(APIView, UpdateModelMixin):
@@ -105,15 +133,6 @@ class Reservation(APIView):
         reservation.delete()
         return Response({'data' : 'Record deleted'}, status=status.HTTP_200_OK)
 
-
-
-
-
-class StaffReservation(viewsets.ModelViewSet):
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (per.IsAuthenticated,)
-    queryset = models.Reservations.objects.all()
-    serializer_class = serializers.ReservationSerializer
 
 class Logout(APIView):
     def get(self, request, format=None):

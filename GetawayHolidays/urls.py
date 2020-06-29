@@ -24,7 +24,6 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet),
-router.register(r'staff-reservation', views.StaffReservation),
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,6 +33,7 @@ urlpatterns = [
     url(r'^logout/', views.Logout.as_view()),
     url(r'^user-reservation/', views.UserReservation.as_view()),
     url('reservation/(?P<pk>[0-9]+)/', views.Reservation.as_view()),
+    url('profile/(?P<pk>[0-9]+)/', views.ClientProfileAPI.as_view()),
 
 
 ]

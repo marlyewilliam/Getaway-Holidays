@@ -18,6 +18,24 @@ def get_user():
         password = "password123")
     return user
 
+def get_user_profile():
+    user = get_user()
+    profile = ClientsProfile.objects.create(
+        user = user,
+        address ="8 Abu Obeid Ebn El Garrah St. Al Shams Club, Heliopolis, Cairo",
+        state = "cairo",
+        postcode = "11234",
+        contact_number = "01222717592",
+        occupation = "Back-end Developer",
+        marital_status = "Single",
+        gender = "Female",
+        city = "cairo",
+        birthday = "1997-01-31",
+        client_signature = "Marly Emad William",
+        signature_date = "2020-06-17T12:23:32Z",
+    )
+
+    return profile
 
 def get_user2():
     user = User.objects.create(email = "marlywilliam31@gmail.com",
@@ -114,30 +132,83 @@ class ClientTests(APITestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_update_clients(self):
-        url = '/users/'
-        user = User.objects.create(email = "marlywilliam31@gmail.com",
-            username = "test1234",
-            first_name = "Marly",
-            last_name = "Last",
-            password = "password123")
-        data = {'username' : 'testupdate'}
-        url = url + str(user.id) +"/"
-        response = self.client.patch(url, data, format='json') 
+class UpdateclientProfileTest(APITestCase):
+
+    def test_same_user(self):
+        profile = get_user_profile()
+
+        token = Token.objects.get(user__username = "test1234")
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        
+        url = "/profile/" + str(profile.id) + "/"
+        data = {
+            "address": "8 Abu Obeid Ebn El Garrah St. Al Shams Club, Heliopolis, Cairo",
+            "state": "Assiut",
+            "postcode": "11234",
+            "contact_number": "01222717592",
+            "occupation": "Back-end Developer",
+            "marital_status": "Single",
+            "gender": "Female",
+            "city": "cairo",
+            "birthday": "1997-01-31",
+            "client_signature": "Marly Emad William",
+            "signature_date": "2020-06-17T12:23:32Z",
+        }
+
+        response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(User.objects.get().username, 'testupdate')
 
-    def test_delete_clients(self):
-        url = '/users/'
-        user = User.objects.create(email = "marlywilliam31@gmail.com",
-            username = "test1234",
-            first_name = "Marly",
-            last_name = "Last",
-            password = "password123")
-        url = url + str(user.id) +"/"
+
+    def test_different_user(self):
+        profile = get_user_profile()
+
+        user = get_user2()
+        token = Token.objects.get(user__username = "test2")
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        url = "/profile/" + str(profile.id) + "/"
+        data = {
+            "address": "8 Abu Obeid Ebn El Garrah St. Al Shams Club, Heliopolis, Cairo",
+            "state": "Assiut",
+            "postcode": "11234",
+            "contact_number": "01222717592",
+            "occupation": "Back-end Developer",
+            "marital_status": "Single",
+            "gender": "Female",
+            "city": "cairo",
+            "birthday": "1997-01-31",
+            "client_signature": "Marly Emad William",
+            "signature_date": "2020-06-17T12:23:32Z",
+        }
+
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data , {'data' : 'You are not allowed to update that user profile'})
+
+
+class DeleteclientProfileTest(APITestCase):
+
+    def test_same_user(self):
+        profile = get_user_profile()
+
+        token = Token.objects.get(user__username = "test1234")
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        
+        url = "/profile/" + str(profile.id) + "/"
         response = self.client.delete(url, format='json')
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_different_user(self):
+        profile = get_user_profile()
+
+        user = get_user2()
+        token = Token.objects.get(user__username = "test2")
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        url = "/profile/" + str(profile.id) + "/"
+        
+        response = self.client.delete(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data , {'data' : 'You are not allowed to delete that user profile'})
+    
 
 class CreateReservationTests(APITestCase):
 

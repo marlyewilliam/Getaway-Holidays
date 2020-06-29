@@ -10,6 +10,8 @@ class ClientsProfileSerializer(serializers.ModelSerializer):
         exclude = ('user', )
 
 
+
+
 class ClientSerializer(serializers.ModelSerializer):
     profile = ClientsProfileSerializer(required=True)
 
@@ -34,6 +36,28 @@ class ClientSerializer(serializers.ModelSerializer):
         client_profile.save()
         return user
 
+    
+    def update(self, instance, validated_data, **extra_kwargs):
+        profile_data = validated_data.pop('profile')
+        password = validated_data.pop('password')
+        health_conditions = None 
+        if 'health_conditions' in profile_data:
+            health_conditions = profile_data.pop('health_conditions')
+            print('health_conditions')
+
+        for (key, value) in validated_data.items():
+            setattr(instance, key, value)
+        # user = User.objects.update(**validated_data)
+        # user.set_password(password)
+        # user.save()
+        client_profile = ClientsProfile.objects.get(user__id=user.id)
+        client_profile = client_profile.update(user=user, **profile_data)
+        if health_conditions:
+            client_profile.health_conditions.set(health_conditions)
+        client_profile.save()
+        return user
+
+    
 
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
